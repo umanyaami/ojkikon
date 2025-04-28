@@ -2,177 +2,125 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Formulir Data Kredit Ikon Tenjo</title>
   <style>
     body {
-      font-family: 'Poppins', sans-serif;
-      background-color: #f9fafb;
+      font-family: 'Arial', sans-serif;
+      background-color: #f5f9f8;
       margin: 0;
       padding: 20px;
     }
-    h2 {
+
+    .container {
+      max-width: 400px;
+      width: 90%;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    h1 {
       text-align: center;
+      font-size: 20px;
       color: #333;
-      margin-top: 10px;
-    }
-    form {
-      background-color: #ffffff;
-      max-width: 500px;
-      margin: 30px auto;
-      padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-    label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 500;
-      color: #555;
-    }
-    input, select {
-      width: 100%;
-      padding: 10px;
       margin-bottom: 20px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      font-size: 14px;
     }
-    button {
+
+    input, select, button {
       width: 100%;
       padding: 12px;
-      background-color: #4f46e5;
-      color: white;
-      border: none;
+      margin: 10px 0;
       border-radius: 8px;
+      border: 1px solid #ccc;
       font-size: 16px;
+      box-sizing: border-box;
+    }
+
+    button {
+      background-color: #5A48F6;
+      color: #fff;
+      border: none;
+      font-weight: bold;
       cursor: pointer;
-      transition: background-color 0.3s ease;
     }
+
     button:hover {
-      background-color: #4338ca;
+      background-color: #4939d4;
     }
-    .progress-container {
-      width: 100%;
-      background-color: #eee;
-      border-radius: 10px;
+
+    .result-card {
       margin-top: 20px;
-      display: none;
-    }
-    .progress-bar {
-      height: 16px;
-      width: 0%;
-      background-color: #4f46e5;
-      border-radius: 10px;
-      transition: width 0.4s ease;
-    }
-    .card-result {
-      background-color: #ffffff;
-      max-width: 400px;
-      margin: 20px auto;
+      background: #ffffff;
       padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      border-radius: 10px;
       text-align: center;
-      display: none;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
-    .card-result h3 {
+
+    .result-title {
+      font-weight: bold;
+      font-size: 18px;
+      color: #5A48F6;
       margin-bottom: 10px;
-      color: #4f46e5;
     }
-    .card-result p {
+
+    .result-text {
       font-size: 16px;
       color: #333;
     }
   </style>
 </head>
 <body>
-  <h2>Formulir Data Kredit Ikon Tenjo</h2>
 
-  <form id="creditForm">
-    <label for="nama">Nama</label>
-    <input type="text" id="nama" required>
-
-    <label for="penghasilan">Penghasilan Per Bulan (Rp)</label>
-    <input type="number" id="penghasilan" required>
-
-    <label for="cicilan">Total Cicilan Per Bulan (Rp)</label>
-    <input type="number" id="cicilan" required>
-
-    <label for="tunggakan">Ada Tunggakan?</label>
-    <select id="tunggakan" required>
-      <option value="tidak">Tidak Ada</option>
-      <option value="ada">Ada</option>
+  <div class="container">
+    <h1>Formulir Data Kredit Ikon Tenjo</h1>
+    <input type="text" id="nama" placeholder="Nama">
+    <input type="number" id="penghasilan" placeholder="Penghasilan Per Bulan (Rp)">
+    <input type="number" id="cicilan" placeholder="Total Cicilan Per Bulan (Rp)">
+    <select id="tunggakan">
+      <option value="Tidak Ada">Tidak Ada</option>
+      <option value="Ada">Ada</option>
     </select>
+    <input type="number" id="lamaTunggakan" placeholder="Lama Tunggakan (hari)" value="0">
 
-    <label for="lamaTunggakan">Lama Tunggakan (hari)</label>
-    <input type="number" id="lamaTunggakan" value="0" required>
+    <button onclick="cekKOL()">Cek KOL</button>
 
-    <button type="button" onclick="hitungKOL()">Cek KOL</button>
-
-    <div class="progress-container" id="progressContainer">
-      <div class="progress-bar" id="progressBar"></div>
+    <div class="result-card" id="hasil" style="display:none;">
+      <div class="result-title">Hasil Analisa Kredit</div>
+      <div class="result-text" id="statusKredit"></div>
     </div>
-  </form>
-
-  <div class="card-result" id="cardResult">
-    <h3>Hasil Analisa Kredit</h3>
-    <p id="hasil"></p>
   </div>
 
-  <script>
-    function hitungKOL() {
-      var penghasilan = parseFloat(document.getElementById('penghasilan').value);
-      var cicilan = parseFloat(document.getElementById('cicilan').value);
-      var tunggakan = document.getElementById('tunggakan').value;
-      var lamaTunggakan = parseInt(document.getElementById('lamaTunggakan').value);
+<script>
+function cekKOL() {
+  const penghasilan = parseInt(document.getElementById('penghasilan').value) || 0;
+  const cicilan = parseInt(document.getElementById('cicilan').value) || 0;
+  const tunggakan = document.getElementById('tunggakan').value;
+  const lamaTunggakan = parseInt(document.getElementById('lamaTunggakan').value) || 0;
 
-      // Reset card & progress
-      document.getElementById('cardResult').style.display = 'none';
-      document.getElementById('progressContainer').style.display = 'block';
-      document.getElementById('progressBar').style.width = '0%';
+  let status = '';
 
-      var progress = 0;
-      var interval = setInterval(function() {
-        if (progress >= 100) {
-          clearInterval(interval);
-          tampilkanHasil(penghasilan, cicilan, tunggakan, lamaTunggakan);
-        } else {
-          progress += 10;
-          document.getElementById('progressBar').style.width = progress + '%';
-        }
-      }, 100);
-    }
+  if (penghasilan <= 0 || cicilan < 0 || lamaTunggakan < 0) {
+    status = 'Data tidak valid';
+  } else if (tunggakan === 'Tidak Ada') {
+    status = 'KOL 1 (Kredit Lancar)';
+  } else if (lamaTunggakan <= 30) {
+    status = 'KOL 2 (Dalam Perhatian Khusus)';
+  } else if (lamaTunggakan <= 90) {
+    status = 'KOL 3 (Kurang Lancar)';
+  } else if (lamaTunggakan <= 120) {
+    status = 'KOL 4 (Diragukan)';
+  } else {
+    status = 'KOL 5 (Macet)';
+  }
 
-    function tampilkanHasil(penghasilan, cicilan, tunggakan, lamaTunggakan) {
-      var debtRatio = (cicilan / penghasilan) * 100;
-      var kol = '';
+  document.getElementById('hasil').style.display = 'block';
+  document.getElementById('statusKredit').innerText = `Status Kredit Anda: ${status}`;
+}
+</script>
 
-      if (tunggakan === 'ada') {
-        if (lamaTunggakan <= 30) {
-          kol = 'KOL 2 (Dalam Perhatian Khusus)';
-        } else if (lamaTunggakan <= 60) {
-          kol = 'KOL 3 (Kurang Lancar)';
-        } else if (lamaTunggakan <= 90) {
-          kol = 'KOL 4 (Diragukan)';
-        } else {
-          kol = 'KOL 5 (Macet)';
-        }
-      } else {
-        if (debtRatio < 30) {
-          kol = 'KOL 1 (Lancar)';
-        } else if (debtRatio <= 50) {
-          kol = 'KOL 2 (Dalam Perhatian Khusus)';
-        } else if (debtRatio <= 70) {
-          kol = 'KOL 3 (Kurang Lancar)';
-        } else {
-          kol = 'KOL 4 (Diragukan)';
-        }
-      }
-
-      document.getElementById('progressContainer').style.display = 'none';
-      document.getElementById('cardResult').style.display = 'block';
-      document.getElementById('hasil').innerText = 'Status Kredit Anda: ' + kol;
-    }
-  </script>
 </body>
 </html>
