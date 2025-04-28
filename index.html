@@ -71,6 +71,23 @@
       font-size: 16px;
       color: #333;
     }
+
+    /* Loading spinner */
+    .loading {
+      border: 6px solid #f3f3f3;
+      border-top: 6px solid #5A48F6;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+      display: none;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
   </style>
 </head>
 <body>
@@ -87,6 +104,8 @@
     <input type="number" id="lamaTunggakan" placeholder="Lama Tunggakan (hari)" value="0">
 
     <button onclick="cekKOL()">Cek KOL</button>
+
+    <div class="loading" id="loadingSpinner"></div>
 
     <div class="result-card" id="hasil" style="display:none;">
       <div class="result-title">Hasil Analisa Kredit</div>
@@ -117,8 +136,16 @@ function cekKOL() {
     status = 'KOL 5 (Macet)';
   }
 
-  document.getElementById('hasil').style.display = 'block';
-  document.getElementById('statusKredit').innerText = `Status Kredit Anda: ${status}`;
+  // Tampilkan loading spinner
+  document.getElementById('loadingSpinner').style.display = 'block';
+  document.getElementById('hasil').style.display = 'none';
+
+  // Setelah 2 detik tampilkan hasil
+  setTimeout(() => {
+    document.getElementById('loadingSpinner').style.display = 'none';
+    document.getElementById('hasil').style.display = 'block';
+    document.getElementById('statusKredit').innerText = `Status Kredit Anda: ${status}`;
+  }, 2000);
 }
 </script>
 
