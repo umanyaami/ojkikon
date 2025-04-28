@@ -2,151 +2,194 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Formulir Data Kredit Ikon Tenjo</title>
   <style>
-    body {
-      font-family: 'Arial', sans-serif;
-      background-color: #f5f9f8;
-      margin: 0;
-      padding: 20px;
-    }
-
-    .container {
-      max-width: 400px;
-      width: 90%;
-      margin: 0 auto;
-      background: #ffffff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-
-    h1 {
-      text-align: center;
-      font-size: 20px;
-      color: #333;
-      margin-bottom: 20px;
-    }
-
-    input, select, button {
+    /* Loading Screen */
+    #loading {
+      position: fixed;
       width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 16px;
-      box-sizing: border-box;
+      height: 100%;
+      background: white;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    button {
-      background-color: #5A48F6;
-      color: #fff;
-      border: none;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #4939d4;
-    }
-
-    .result-card {
-      margin-top: 20px;
-      background: #ffffff;
-      padding: 20px;
-      border-radius: 10px;
-      text-align: center;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-
-    .result-title {
-      font-weight: bold;
-      font-size: 18px;
-      color: #5A48F6;
-      margin-bottom: 10px;
-    }
-
-    .result-text {
-      font-size: 16px;
-      color: #333;
-    }
-
-    /* Loading spinner */
-    .loading {
+    /* Animasi loading */
+    .spinner {
       border: 6px solid #f3f3f3;
-      border-top: 6px solid #5A48F6;
+      border-top: 6px solid #6366F1;
       border-radius: 50%;
-      width: 40px;
-      height: 40px;
+      width: 50px;
+      height: 50px;
       animation: spin 1s linear infinite;
-      margin: 20px auto;
-      display: none;
     }
 
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+
+    /* Form Styles */
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f7fcfc;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 400px;
+      margin: 80px auto 20px;
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 20px;
+      font-size: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      color: #555;
+      font-size: 14px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #6366F1;
+      border: none;
+      color: white;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #4f46e5;
+    }
+
+    .result-card {
+      background: white;
+      margin: 20px auto 0;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      text-align: center;
+      max-width: 400px;
+    }
+
+    .result-card h3 {
+      color: #6366F1;
+      margin-bottom: 10px;
+    }
+
+    .hidden {
+      display: none;
+    }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <h1>Formulir Data Kredit Ikon Tenjo</h1>
-    <input type="text" id="nama" placeholder="Nama">
-    <input type="number" id="penghasilan" placeholder="Penghasilan Per Bulan (Rp)">
-    <input type="number" id="cicilan" placeholder="Total Cicilan Per Bulan (Rp)">
-    <select id="tunggakan">
-      <option value="Tidak Ada">Tidak Ada</option>
-      <option value="Ada">Ada</option>
-    </select>
-    <input type="number" id="lamaTunggakan" placeholder="Lama Tunggakan (hari)" value="0">
+<!-- Loading Screen -->
+<div id="loading">
+  <div class="spinner"></div>
+</div>
 
-    <button onclick="cekKOL()">Cek KOL</button>
+<!-- Form Container -->
+<div class="container hidden" id="form-container">
+  <h2>Formulir Data Kredit Ikon Tenjo</h2>
+  
+  <label for="nama">Nama</label>
+  <input type="text" id="nama" placeholder="Masukkan Nama">
 
-    <div class="loading" id="loadingSpinner"></div>
+  <label for="penghasilan">Penghasilan Per Bulan (Rp)</label>
+  <input type="number" id="penghasilan" placeholder="Contoh: 5000000">
 
-    <div class="result-card" id="hasil" style="display:none;">
-      <div class="result-title">Hasil Analisa Kredit</div>
-      <div class="result-text" id="statusKredit"></div>
-    </div>
-  </div>
+  <label for="cicilan">Total Cicilan Per Bulan (Rp)</label>
+  <input type="number" id="cicilan" placeholder="Contoh: 1000000">
+
+  <label for="tunggakan">Ada Tunggakan?</label>
+  <select id="tunggakan">
+    <option value="Tidak Ada">Ada Tunggakan? Tidak Ada</option>
+    <option value="Ada">Ada Tunggakan? Ada</option>
+  </select>
+
+  <label for="lamaTunggakan">Lama Tunggakan (hari)</label>
+  <input type="number" id="lamaTunggakan" placeholder="Contoh: 30" value="0">
+
+  <button onclick="cekKOL()">Cek KOL</button>
+</div>
+
+<!-- Result Card -->
+<div class="result-card hidden" id="result-card">
+  <h3>Hasil Analisa Kredit</h3>
+  <p id="status"></p>
+</div>
 
 <script>
-function cekKOL() {
-  const penghasilan = parseInt(document.getElementById('penghasilan').value) || 0;
-  const cicilan = parseInt(document.getElementById('cicilan').value) || 0;
-  const tunggakan = document.getElementById('tunggakan').value;
-  const lamaTunggakan = parseInt(document.getElementById('lamaTunggakan').value) || 0;
+  // Loading screen handling
+  window.onload = function() {
+    setTimeout(function() {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('form-container').classList.remove('hidden');
+    }, 1000); // Delay 1 detik
+  };
 
-  let status = '';
+  function cekKOL() {
+    const nama = document.getElementById('nama').value;
+    const penghasilan = parseInt(document.getElementById('penghasilan').value);
+    const cicilan = parseInt(document.getElementById('cicilan').value);
+    const tunggakan = document.getElementById('tunggakan').value;
+    const lamaTunggakan = parseInt(document.getElementById('lamaTunggakan').value);
 
-  if (penghasilan <= 0 || cicilan < 0 || lamaTunggakan < 0) {
-    status = 'Data tidak valid';
-  } else if (tunggakan === 'Tidak Ada') {
-    status = 'KOL 1 (Kredit Lancar)';
-  } else if (lamaTunggakan <= 30) {
-    status = 'KOL 2 (Dalam Perhatian Khusus)';
-  } else if (lamaTunggakan <= 90) {
-    status = 'KOL 3 (Kurang Lancar)';
-  } else if (lamaTunggakan <= 120) {
-    status = 'KOL 4 (Diragukan)';
-  } else {
-    status = 'KOL 5 (Macet)';
+    let status = "";
+
+    if (isNaN(penghasilan) || isNaN(cicilan)) {
+      status = "Data tidak valid.";
+    } else {
+      if (tunggakan === "Tidak Ada") {
+        if (cicilan / penghasilan < 0.4) {
+          status = "KOL 1 - Kredit Lancar";
+        } else {
+          status = "KOL 2 - Kredit Dalam Perhatian Khusus";
+        }
+      } else {
+        if (lamaTunggakan <= 30) {
+          status = "KOL 2 - Kredit Dalam Perhatian Khusus";
+        } else if (lamaTunggakan <= 90) {
+          status = "KOL 3 - Kredit Kurang Lancar";
+        } else if (lamaTunggakan <= 180) {
+          status = "KOL 4 - Kredit Diragukan";
+        } else {
+          status = "KOL 5 - Kredit Macet";
+        }
+      }
+    }
+
+    document.getElementById('status').innerText = `Status Kredit Anda: ${status}`;
+    document.getElementById('result-card').classList.remove('hidden');
+    document.getElementById('result-card').scrollIntoView({ behavior: 'smooth' });
   }
-
-  // Tampilkan loading spinner
-  document.getElementById('loadingSpinner').style.display = 'block';
-  document.getElementById('hasil').style.display = 'none';
-
-  // Setelah 2 detik tampilkan hasil
-  setTimeout(() => {
-    document.getElementById('loadingSpinner').style.display = 'none';
-    document.getElementById('hasil').style.display = 'block';
-    document.getElementById('statusKredit').innerText = `Status Kredit Anda: ${status}`;
-  }, 2000);
-}
 </script>
 
 </body>
